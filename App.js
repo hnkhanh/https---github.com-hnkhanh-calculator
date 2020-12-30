@@ -46,9 +46,8 @@ function App() {
         }
     }
     const calculate = () => {
-        setFormula(eval(formula));
-        setDisplay(eval(formula));
-        console.log(display);
+        setFormula(eval(formula).toFixed(4));
+        setDisplay(eval(formula).toFixed(4));
     }
     const clear = () => {
         setDisplay('0');
