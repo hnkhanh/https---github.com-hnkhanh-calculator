@@ -46,9 +46,11 @@ function App() {
         }
     }
     const calculate = () => {
-        setFormula(eval(formula).toFixed(4));
-        setDisplay(eval(formula).toFixed(4));
-    }
+        const answer = eval(formula);
+            setFormula(parseFloat(answer.toFixed(5)));
+            setDisplay(parseFloat(answer.toFixed(5)));
+        }
+        
     const clear = () => {
         setDisplay('0');
         setFormula('')
