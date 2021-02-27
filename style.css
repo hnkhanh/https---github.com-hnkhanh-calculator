@@ -20,15 +20,16 @@ h1 {
 }
 
 h5 {
-  text-align:center;
+  text-align: center;
   color: white;
   text-decoration: none;
   font-size: 0.83em;
 }
 
+a,
 a:visited {
   color: white;
-} 
+}
 
 .container {
   width: 400px;
@@ -40,7 +41,7 @@ a:visited {
   width: 300px;
   margin: auto;
   margin-top: 1em;
-  min-height: 400px;
+  min-height: 300px;
   border: solid 1px #3a4655;
   box-shadow: 0 8px 50px -7px black;
 }
