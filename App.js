@@ -4,35 +4,38 @@ function App() {
 
     const number = (number) => {
         //input '0123' => '123'
-        if(display == "0"){
-            setFormula(number);
+        if(/([0])$/.test(display)){
+            setFormula(prev => prev.slice(0,-1) + number);
             setDisplay(number);
         } 
-        //push the operand up before add number
         else if(/([+\-*\/])$/.test(formula)){
             setDisplay(number);
-            setFormula(formula + number);
+            setFormula(prev => prev + number);
+        }
+        //start new formula after hitting equal
+        else if(/([=])$/.test(formula) && display != null){
+            setFormula(number.slice(0,-1));
+            setDisplay(number.slice(0,-1));
         }
         else {
-            setDisplay(display + number);
-            setFormula(formula + number);
+            setDisplay(prev => prev + number);
+            setFormula(prev => prev + number);
         }
     }
     const operand = (symbol) => {
-        //If 2 or more operators are entered consecutively,
-        //the operation performed should be the last operator entered
-        //excluding the negative (-) sign.
+        if (/[=]$/.test(formula)){
+            let temp = (eval(formula.slice(0,-1))).toFixed(4);
+            setFormula ((temp + symbol).slice(0,-1))
+        }
         //ex: 5 * - 5 = -25; 5 * - + 5 = 10
-        if(/(([+\-*\/]){2,})$/.test(formula)){
-            setFormula(formula.slice(0,-2) + symbol);
-            setDisplay(symbol);
+        if(/(([+\-*\/]){2})$/.test(formula)){
+            setFormula(prev => prev.slice(0,-2) + symbol);
         }
         else if(/([+\-*\/])$/.test(formula) && symbol != "-") {
-            setFormula(formula.slice(0,-1) + symbol);
-            setDisplay(symbol);
+            setFormula(prev => prev.slice(0,-1) + symbol);
         }
         else {
-            setFormula(formula + symbol);
+            setFormula(prev => prev + symbol);
             setDisplay(symbol)
         }
     }
@@ -41,23 +44,30 @@ function App() {
         if(display.includes(".")){
             return;
         } else {
-            setDisplay(display + ".");
-            setFormula(formula + ".");
+            setDisplay(prev => prev + ".");
+            setFormula(prev => prev + ".");
         }
     }
     const calculate = () => {
-        const answer = eval(formula);
-            setFormula(parseFloat(answer.toFixed(5)));
-            setDisplay(parseFloat(answer.toFixed(5)));
+        if(/([+\-*\/])$/.test(formula)){
+            console.log(formula);
+            setDisplay(eval(formula.slice(0,-1)));
+            setFormula(prev => prev.slice(0,-1) + "=");  
         }
+        else{
+        const answer = eval(formula);
+            setFormula(prev => prev + "=")
+            setDisplay(parseFloat(answer.toFixed(4)));
+        }
+    }
         
     const clear = () => {
         setDisplay('0');
         setFormula('')
     }
     const backspace = () => {
-        setFormula(formula.slice(0,-1));
-        setDisplay(formula.slice(0,-1));
+        setFormula(prev => prev.slice(0,-1));
+        setDisplay(prev => prev.slice(0,-1));
     }
 
     return(
