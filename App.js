@@ -4,7 +4,7 @@ function App() {
 
     const number = (number) => {
         //input '0123' => '123'
-        if(/([0])$/.test(display)){
+        if(/([+\-*\/])([0])$/.test(formula) || display == '0'){
             setFormula(prev => prev.slice(0,-1) + number);
             setDisplay(number);
         } 
