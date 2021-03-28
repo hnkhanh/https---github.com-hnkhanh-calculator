@@ -14,22 +14,34 @@ function App() {
         }
         //start new formula after hitting equal
         else if(/([=])$/.test(formula) && display != null){
-            setFormula(number.slice(0,-1));
-            setDisplay(number.slice(0,-1));
+            setFormula(number);
+            setDisplay(number);    
         }
         else {
             setDisplay(prev => prev + number);
             setFormula(prev => prev + number);
         }
     }
+
+    function precision(a) {
+        if (!isFinite(a)) return 0;
+        let e = 1, p = 0;
+        while (Math.round(a * e) / e !== a) { e *= 10; p++ }
+        return p;
+    }
+
     const operand = (symbol) => {
         if (/[=]$/.test(formula)){
-            let temp = (eval(formula.slice(0,-1))).toFixed(4);
+            let temp = (eval(formula.slice(0,-1)));
+            let decimal = precision(temp);
+            if (decimal > 4) temp = (eval(formula.slice(0,-1))).toFixed(4)
+            else temp = (eval(formula.slice(0,-1))).toFixed(decimal)
             setFormula ((temp + symbol).slice(0,-1))
         }
         //ex: 5 * - 5 = -25; 5 * - + 5 = 10
         if(/(([+\-*\/]){2})$/.test(formula)){
             setFormula(prev => prev.slice(0,-2) + symbol);
+            setDisplay(symbol)
         }
         else if(/([+\-*\/])$/.test(formula) && symbol != "-") {
             setFormula(prev => prev.slice(0,-1) + symbol);
@@ -41,9 +53,8 @@ function App() {
     }
     const dot = () => {
         //two "." in one number should not be accepted
-        if(display.includes(".")){
-            return;
-        } else {
+        if(display.includes(".")) return;
+         else {
             setDisplay(prev => prev + ".");
             setFormula(prev => prev + ".");
         }
@@ -55,7 +66,7 @@ function App() {
             setFormula(prev => prev.slice(0,-1) + "=");  
         }
         else{
-        const answer = eval(formula);
+            const answer = eval(formula);
             setFormula(prev => prev + "=")
             setDisplay(parseFloat(answer.toFixed(4)));
         }
@@ -66,6 +77,7 @@ function App() {
         setFormula('')
     }
     const backspace = () => {
+        if(/([=])$/.test(formula) && display != null) return
         setFormula(prev => prev.slice(0,-1));
         setDisplay(prev => prev.slice(0,-1));
     }
